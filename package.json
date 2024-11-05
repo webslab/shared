@@ -4,8 +4,10 @@
 	},
 	"dependencies": {
 		"@lit/task": "^1.0.1",
-		"@types/nunjucks": "^3.2.6",
 		"lit": "^3.2.1",
 		"nunjucks": "^3.2.4"
+	},
+	"devDependencies": {
+		"@types/nunjucks": "^3.2.6",
 	}
 }

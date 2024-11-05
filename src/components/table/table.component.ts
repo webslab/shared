@@ -2,8 +2,9 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 import { html, LitElement } from 'lit';
 import type { CSSResultGroup, TemplateResult } from 'lit';
 import { Task } from '@lit/task';
+
+// @ts-types="@types/nunjucks"
 import nunjucks from 'nunjucks';
-// import nunjucks from 'nunjucks/browser/nunjucks-slim.js'; // doesn't compile templates
 
 import styles from './table.style.ts';
 import componentStyles from '../styles.ts';
