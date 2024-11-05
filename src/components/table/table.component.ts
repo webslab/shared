@@ -3,9 +3,10 @@ import { html, LitElement } from 'lit';
 import type { CSSResultGroup, TemplateResult } from 'lit';
 import { Task } from '@lit/task';
 import nunjucks from 'nunjucks';
+// import nunjucks from 'nunjucks/browser/nunjucks-slim.js'; // doesn't compile templates
 
 import styles from './table.style.ts';
-import componentStyles from '$components/styles.ts';
+import componentStyles from '../styles.ts';
 
 @customElement('wl-table')
 export class WlTable extends LitElement {

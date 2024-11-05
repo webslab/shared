@@ -4,9 +4,9 @@ import type { CSSResultGroup, TemplateResult } from 'lit';
 import { Task } from '@lit/task';
 
 import styles from './security.style.ts';
-import componentStyles from '$components/styles.ts';
+import componentStyles from '../styles.ts';
 
-import type { AuthService } from '$services/auth/index.ts';
+import type { AuthService } from '../../services/auth/index.ts';
 
 @customElement('wl-security')
 export class WlSecurity extends LitElement {
