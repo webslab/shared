@@ -9,7 +9,7 @@
 		"nunjucks": "^3.2.4"
 	},
 	"devDependencies": {
-    "@types/ejs": "^3.1.5",
-		"@types/nunjucks": "^3.2.6",
+		"@types/ejs": "^3.1.5",
+		"@types/nunjucks": "^3.2.6"
 	}
 }
