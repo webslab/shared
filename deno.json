@@ -8,6 +8,7 @@
 	},
 	"imports": {
 		"$services": "./src/services/index.ts",
+		"$services/database": "./src/services/database/index.ts",
 		"$services/theming": "./src/services/theming/index.ts",
 		"$services/auth": "./src/services/auth/index.ts",
 		"$components": "./src/components/index.ts",

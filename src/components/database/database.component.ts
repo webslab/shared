@@ -8,7 +8,8 @@ import nunjucks from 'nunjucks';
 
 import type { Uuid } from 'surrealdb';
 import type { CSSResultGroup, TemplateResult } from 'lit';
-import type { IAuthService } from '../../services/auth/index.ts';
+import type { IDatabaseService } from '../../services/database/database.interface.ts';
+// import type { IAuthService } from '../../services/auth/index.ts';
 
 import styles from './database.style.ts';
 import componentStyles from '../styles.ts';
@@ -27,7 +28,7 @@ export class WlDatabase extends WebslabElement {
 	accessor target!: string;
 
 	@property({ type: Object })
-	accessor auth: IAuthService | undefined; // or something thtat implements isReady and getDb
+	accessor auth: IDatabaseService | undefined; // or something thtat implements isReady and getDb
 
 	@query('slot[name="template"]')
 	accessor templateSlot!: HTMLSlotElement;
@@ -70,8 +71,14 @@ export class WlDatabase extends WebslabElement {
 			target.innerHTML = rendered;
 
 			if (this.live) {
-				const uuid: Uuid[] = await db.query('LIVE ' + this.query)!;
-				await this.listenDb(uuid[0]);
+				try {
+					const uuid: Uuid[] = await db.query('LIVE ' + this.query);
+					await this.listenDb(uuid[0]);
+				} catch (e) {
+					console.error(e);
+					this.emit('wl-task:error');
+					throw e;
+				}
 			}
 
 			this.emit('wl-task:completed');
