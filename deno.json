@@ -2,11 +2,26 @@
 	"name": "@webslab/shared",
 	"version": "0.0.1",
 	"license": "MIT",
+	"tasks": {
+		"exam:auth": "deno run --watch --allow-net --allow-read ./_examples/auth/01.ts",
+		"exam:db": "deno run --watch --allow-net --allow-read ./_examples/database/01.ts"
+	},
+	"imports": {
+		"$services": "./src/services/index.ts",
+		"$services/theming": "./src/services/theming/index.ts",
+		"$services/auth": "./src/services/auth/index.ts",
+		"$components": "./src/components/index.ts",
+		"$components/security": "./src/components/security/index.ts",
+		"$components/database": "./src/components/database/index.ts"
+	},
 	"exports": {
 		"./services": "./src/services/index.ts",
+		"./services/database": "./src/services/database//index.ts",
+		"./services/theming": "./src/services/theming/index.ts",
+		"./services/auth": "./src/services/auth/index.ts",
 		"./components": "./src/components/index.ts",
 		"./components/security": "./src/components/security/index.ts",
-		"./components/table": "./src/components/table/index.ts"
+		"./components/database": "./src/components/database/index.ts"
 	},
 	"compilerOptions": {
 		"lib": ["deno.ns", "dom"]
@@ -17,6 +32,7 @@
 		"lineWidth": 96,
 		"indentWidth": 4,
 		"semiColons": true,
-		"singleQuote": true
+		"singleQuote": true,
+		"exclude": ["./dist", "./_dev/public/template.html"]
 	}
 }
