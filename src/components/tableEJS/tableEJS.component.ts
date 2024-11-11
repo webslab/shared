@@ -35,6 +35,7 @@ export class WlTableEJS extends LitElement {
 	// TODO: probably unsafe.
 	// - libraries like `he` we could avoid this
 	// - https://www.npmjs.com/package/html-sloppy-escaper
+	// - or something like _safe_ filter in nuajucks
 	unEscape(htmlStr: string) {
 		return htmlStr
 			.replace(/&lt;/g, '<')
@@ -58,7 +59,7 @@ export class WlTableEJS extends LitElement {
 				.querySelector(this.target)!;
 
 			const unscaped = this.unEscape(template.innerHTML);
-			target.innerHTML = await ejs.render(unscaped, { result: this.data }, {});
+			target.innerHTML = ejs.render(unscaped, { result: this.data }, {});
 		},
 		args: () => [],
 	});
