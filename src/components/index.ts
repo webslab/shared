@@ -1,2 +1,2 @@
-export * from './security/index.ts';
-export * from './table/index.ts';
+export * from '$components/security';
+export * from '$components/database';

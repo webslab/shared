@@ -1,7 +1,7 @@
-import { WlTable } from './table.component.ts';
+import { WlDatabase } from './database.component.ts';
 
-export * from './table.component.ts';
-export default WlTable;
+export * from './database.component.ts';
+export default WlDatabase;
 
 // customElements.define("wl-table", WlTable);
 // declare global {
