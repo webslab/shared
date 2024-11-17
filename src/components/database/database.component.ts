@@ -81,7 +81,7 @@ export class WlDatabase extends WebslabElement {
 				}
 			}
 
-			this.emit('wl-task:completed');
+			this.emit('wl-task:completed', { detail: { result: res } });
 		},
 		args: () => [this.auth],
 	});
