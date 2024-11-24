@@ -114,8 +114,9 @@ export class WlSecurity extends WebslabElement {
 	}
 }
 
-declare global {
-	interface HTMLElementTagNameMap {
-		"wl-security": WlSecurity;
-	}
-}
+// TODO: avoid slow typing
+// declare global {
+// 	interface HTMLElementTagNameMap {
+// 		"wl-security": WlSecurity;
+// 	}
+// }

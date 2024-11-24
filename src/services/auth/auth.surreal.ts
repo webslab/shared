@@ -2,7 +2,11 @@ import { AuthService } from "./auth.service.ts";
 import type { User } from "../../types/index.ts";
 
 export class AuthSurreal extends AuthService {
-	override async signin(username: string, password: string, access?: string) {
+	override async signin(
+		username: string,
+		password: string,
+		access?: string,
+	): Promise<boolean> {
 		const db = this.databaseService.getDb();
 
 		if (await this.isReady) {

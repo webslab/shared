@@ -185,8 +185,9 @@ export class WlDatabase extends WebslabElement {
 	}
 }
 
-declare global {
-	interface HTMLElementTagNameMap {
-		"wl-database": WlDatabase;
-	}
-}
+// TODO: avoid slow typing
+// declare global {
+// 	interface HTMLElementTagNameMap {
+// 		"wl-database": WlDatabase;
+// 	}
+// }
