@@ -1,15 +1,15 @@
-import { customElement, property, query, state } from 'lit/decorators.js';
-import { html, LitElement } from 'lit';
-import type { CSSResultGroup, TemplateResult } from 'lit';
-import { Task } from '@lit/task';
+import { customElement, property, query, state } from "lit/decorators.js";
+import { html, LitElement } from "lit";
+import type { CSSResultGroup, TemplateResult } from "lit";
+import { Task } from "@lit/task";
 
 // @ts-types="@types/ejs"
-import ejs from 'ejs/ejs.min.js';
+import ejs from "ejs/ejs.min.js";
 
-import styles from './tableEJS.style.ts';
-import componentStyles from '../styles.ts';
+import styles from "./tableEJS.style.ts";
+import componentStyles from "../styles.ts";
 
-@customElement('wl-table-ejs')
+@customElement("wl-table-ejs")
 export class WlTableEJS extends LitElement {
 	static override styles: CSSResultGroup = [componentStyles, styles];
 
@@ -19,17 +19,17 @@ export class WlTableEJS extends LitElement {
 	@query('slot[name="template"]')
 	accessor templateSlot!: HTMLSlotElement;
 
-	@query('slot')
+	@query("slot")
 	accessor bodySlot!: HTMLSlotElement;
 
-	@query('.wrap')
+	@query(".wrap")
 	accessor wrap!: HTMLDivElement;
 
 	@state()
 	accessor data: object[] = [
-		{ id: 1, name: 'John Doe', age: 25 },
-		{ id: 2, name: 'Jane Doe', age: 22 },
-		{ id: 3, name: 'John Smith', age: 30 },
+		{ id: 1, name: "John Doe", age: 25 },
+		{ id: 2, name: "Jane Doe", age: 22 },
+		{ id: 3, name: "John Smith", age: 30 },
 	];
 
 	// TODO: probably unsafe.
@@ -38,11 +38,11 @@ export class WlTableEJS extends LitElement {
 	// - or something like _safe_ filter in nuajucks
 	unEscape(htmlStr: string) {
 		return htmlStr
-			.replace(/&lt;/g, '<')
-			.replace(/&gt;/g, '>')
+			.replace(/&lt;/g, "<")
+			.replace(/&gt;/g, ">")
 			.replace(/&quot;/g, '"')
 			.replace(/&#39;/g, "'")
-			.replace(/&amp;/g, '&');
+			.replace(/&amp;/g, "&");
 	}
 
 	private task = new Task(this, {
@@ -81,6 +81,6 @@ export class WlTableEJS extends LitElement {
 
 declare global {
 	interface HTMLElementTagNameMap {
-		'wl-table-ejs': WlTableEJS;
+		"wl-table-ejs": WlTableEJS;
 	}
 }

@@ -1,27 +1,27 @@
-import { WebslabElement } from '../webslab/index.ts';
-import { customElement, property, query } from 'lit/decorators.js';
-import { html } from 'lit';
-import { Task } from '@lit/task';
+import { WebslabElement } from "../webslab/index.ts";
+import { customElement, property, query } from "lit/decorators.js";
+import { html } from "lit";
+import { Task } from "@lit/task";
 
-import styles from './security.style.ts';
-import componentStyles from '../styles.ts';
+import styles from "./security.style.ts";
+import componentStyles from "../styles.ts";
 
-import type { CSSResultGroup, TemplateResult } from 'lit';
-import type { IAuthService } from '../../services/auth/index.ts';
+import type { CSSResultGroup, TemplateResult } from "lit";
+import type { IAuthService } from "../../services/auth/index.ts";
 
 export type Needs = {
 	auth: boolean;
 	admin: boolean;
 };
 
-@customElement('wl-security')
+@customElement("wl-security")
 export class WlSecurity extends WebslabElement {
 	static override styles: CSSResultGroup = [componentStyles, styles];
 
-	@query('.wrap')
+	@query(".wrap")
 	accessor wrap!: HTMLDivElement;
 
-	@query('.warning')
+	@query(".warning")
 	accessor warning!: HTMLDivElement;
 
 	@query('slot[name="warning"]')
@@ -37,12 +37,12 @@ export class WlSecurity extends WebslabElement {
 		task: async ([auth], _) => {
 			if (!auth) {
 				this.showWarning();
-				this.emit('wl-task:error');
+				this.emit("wl-task:error");
 				return;
 			}
 
 			if (!await auth.isReady) {
-				this.emit('wl-task:error');
+				this.emit("wl-task:error");
 				return;
 			}
 
@@ -63,7 +63,7 @@ export class WlSecurity extends WebslabElement {
 				}
 			}
 
-			this.emit('wl-task:completed');
+			this.emit("wl-task:completed");
 		},
 		args: () => [this.auth],
 	});
@@ -96,19 +96,19 @@ export class WlSecurity extends WebslabElement {
 	}
 
 	showWarning() {
-		this.warning.classList.remove('hidden');
+		this.warning.classList.remove("hidden");
 	}
 
 	hideWarning() {
-		this.warning.classList.add('hidden');
+		this.warning.classList.add("hidden");
 
 		setTimeout(() => {
-			this.wrap.style.opacity = '0';
+			this.wrap.style.opacity = "0";
 		}, 10);
 
 		setTimeout(() => {
-			this.wrap.style.top = '-9999px';
-			this.wrap.style.display = 'none';
+			this.wrap.style.top = "-9999px";
+			this.wrap.style.display = "none";
 		}, Number(2) * 600);
 		// }, Number(duration) * 500); // TODO: maybe increase the duration
 	}
@@ -116,6 +116,6 @@ export class WlSecurity extends WebslabElement {
 
 declare global {
 	interface HTMLElementTagNameMap {
-		'wl-security': WlSecurity;
+		"wl-security": WlSecurity;
 	}
 }

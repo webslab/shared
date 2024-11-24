@@ -1,20 +1,20 @@
-import { WebslabElement } from '../webslab/index.ts';
-import { customElement, property, query } from 'lit/decorators.js';
-import { html } from 'lit';
-import { Task } from '@lit/task';
+import { WebslabElement } from "../webslab/index.ts";
+import { customElement, property, query } from "lit/decorators.js";
+import { html } from "lit";
+import { Task } from "@lit/task";
 
 // @ts-types="@types/nunjucks"
-import nunjucks from 'nunjucks';
+import nunjucks from "nunjucks";
 
-import type { Uuid } from 'surrealdb';
-import type { CSSResultGroup, TemplateResult } from 'lit';
-import type { IDatabaseService } from '../../services/database/database.interface.ts';
+import type { Uuid } from "surrealdb";
+import type { CSSResultGroup, TemplateResult } from "lit";
+import type { IDatabaseService } from "../../services/database/database.interface.ts";
 // import type { IAuthService } from '../../services/auth/index.ts';
 
-import styles from './database.style.ts';
-import componentStyles from '../styles.ts';
+import styles from "./database.style.ts";
+import componentStyles from "../styles.ts";
 
-@customElement('wl-database')
+@customElement("wl-database")
 export class WlDatabase extends WebslabElement {
 	static override styles: CSSResultGroup = [componentStyles, styles];
 
@@ -33,21 +33,21 @@ export class WlDatabase extends WebslabElement {
 	@query('slot[name="template"]')
 	accessor templateSlot!: HTMLSlotElement;
 
-	@query('slot')
+	@query("slot")
 	accessor bodySlot!: HTMLSlotElement;
 
-	@query('.wrap')
+	@query(".wrap")
 	accessor wrap!: HTMLDivElement;
 
 	private task = new Task(this, {
 		task: async ([auth]) => {
 			if (!auth) {
-				this.emit('wl-task:error');
+				this.emit("wl-task:error");
 				return;
 			}
 
 			if (!await auth.isReady) {
-				this.emit('wl-task:error');
+				this.emit("wl-task:error");
 				return;
 			}
 
@@ -72,16 +72,16 @@ export class WlDatabase extends WebslabElement {
 
 			if (this.live) {
 				try {
-					const uuid: Uuid[] = await db.query('LIVE ' + this.query);
+					const uuid: Uuid[] = await db.query("LIVE " + this.query);
 					await this.listenDb(uuid[0]);
 				} catch (e) {
 					console.error(e);
-					this.emit('wl-task:error');
+					this.emit("wl-task:error");
 					throw e;
 				}
 			}
 
-			this.emit('wl-task:completed', { detail: { result: res } });
+			this.emit("wl-task:completed", { detail: { result: res } });
 		},
 		args: () => [this.auth],
 	});
@@ -115,7 +115,7 @@ export class WlDatabase extends WebslabElement {
 			{ result: [[item]] },
 		);
 
-		target.insertAdjacentHTML('beforeend', rendered);
+		target.insertAdjacentHTML("beforeend", rendered);
 	}
 
 	// updates the item when it is possible.
@@ -165,19 +165,19 @@ export class WlDatabase extends WebslabElement {
 		const db = this.auth!.getDb();
 		await db.subscribeLive(uuid, (action, item) => {
 			switch (action) {
-				case 'CLOSE':
+				case "CLOSE":
 					return;
-				case 'CREATE':
+				case "CREATE":
 					this.createItem(item);
 					break;
-				case 'UPDATE':
+				case "UPDATE":
 					this.updateItem(item);
 					break;
-				case 'DELETE':
+				case "DELETE":
 					this.deleteItem(item);
 					break;
 				default:
-					console.log('Unknown action', action);
+					console.log("Unknown action", action);
 			}
 
 			this.emit(`wl-action:${action.toLowerCase()}`, { detail: { item } });
@@ -187,6 +187,6 @@ export class WlDatabase extends WebslabElement {
 
 declare global {
 	interface HTMLElementTagNameMap {
-		'wl-database': WlDatabase;
+		"wl-database": WlDatabase;
 	}
 }

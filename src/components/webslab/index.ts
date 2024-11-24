@@ -1,4 +1,4 @@
-import { LitElement } from 'lit';
+import { LitElement } from "lit";
 
 export class WebslabElement extends LitElement {
 	emit<T extends string>(name: T, options?: CustomEventInit): CustomEvent<T> {
