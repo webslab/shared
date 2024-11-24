@@ -1,1 +1,1 @@
-export * from './database.service.ts';
+export * from "./database.service.ts";

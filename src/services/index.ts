@@ -1,3 +1,3 @@
-export * from '$services/auth';
-export * from '$services/theming';
-export * from '$services/database';
+export * from "./auth/index.ts";
+export * from "./theming/index.ts";
+export * from "./database/index.ts";

@@ -1,6 +1,5 @@
-// import type { Surreal } from 'surrealdb';
-import type { User } from '../models/user.type.ts';
-import type { IDatabaseService } from '../database/database.interface.ts';
+import type { IDatabaseService } from "../database/database.interface.ts";
+import type { User } from "../../types/index.ts";
 
 export interface IAuthService extends IDatabaseService {
 	// isReady: Promise<boolean>;

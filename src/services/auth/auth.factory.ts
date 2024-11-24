@@ -1,19 +1,17 @@
-import { AuthSurreal } from './auth.surreal.ts';
-import { AuthZero } from './auth.zero.ts';
+import { AuthSurreal } from "./auth.surreal.ts";
+import { AuthZero } from "./auth.zero.ts";
 
-import type { IAuthService } from './auth.interface.ts';
-import type { DbConfig } from '../database/index.ts';
-import type { Surreal } from 'surrealdb';
+import type { DbConfig } from "../database/index.ts";
+import type { Surreal } from "surrealdb";
 
-type AuthProvider = 'surreal' | 'auth0';
+type AuthProvider = "surreal" | "auth0";
 
 // NOTE: could be an union: AuthSurreal | AuthZero
 export function getAuthService(
 	db: DbConfig | Surreal,
-	provider: AuthProvider = 'surreal',
-	// ): IAuthService {
+	provider: AuthProvider = "surreal",
 ): AuthSurreal | AuthZero {
-	if (provider !== 'surreal') {
+	if (provider !== "surreal") {
 		return new AuthZero(db);
 	}
 

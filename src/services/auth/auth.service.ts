@@ -1,19 +1,19 @@
-import { DatabaseService } from '../database/index.ts';
+import { DatabaseService } from "../database/index.ts";
 
-import type { IAuthService } from './auth.interface.ts';
-import type { DbConfig } from '../database/index.ts';
-import type { Surreal } from 'surrealdb';
-import type { User } from '../models/user.type.ts';
+import type { IAuthService } from "./auth.interface.ts";
+import type { DbConfig } from "../database/index.ts";
+import type { Surreal } from "surrealdb";
+import type { User } from "../../types/index.ts";
 
 export abstract class AuthService implements IAuthService {
 	public isReady: Promise<boolean>;
 	private user?: User;
-	private token?: string = localStorage.getItem('token') || undefined;
+	private token?: string = localStorage.getItem("token") || undefined;
 	protected databaseService: DatabaseService;
 
 	constructor(db: DbConfig | Surreal) {
-		this.user = localStorage.getItem('user')
-			? JSON.parse(localStorage.getItem('user') as string)
+		this.user = localStorage.getItem("user")
+			? JSON.parse(localStorage.getItem("user") as string)
 			: undefined;
 
 		this.databaseService = new DatabaseService(db);
@@ -44,7 +44,7 @@ export abstract class AuthService implements IAuthService {
 
 	// ?? should be abstract
 	public signup(user: User): Promise<boolean> {
-		console.log('signup', user);
+		console.log("signup", user);
 		return Promise.resolve(true);
 	}
 
@@ -57,7 +57,7 @@ export abstract class AuthService implements IAuthService {
 	}
 
 	public isAdministrator(): boolean {
-		return this.user?.role === 'admin';
+		return this.user?.role === "admin";
 	}
 
 	public getDb(): Surreal {
@@ -70,12 +70,12 @@ export abstract class AuthService implements IAuthService {
 
 	protected setToken(token: string) {
 		this.token = token;
-		localStorage.setItem('token', token);
+		localStorage.setItem("token", token);
 	}
 
 	protected clearToken() {
 		this.token = undefined;
-		localStorage.removeItem('token');
+		localStorage.removeItem("token");
 	}
 
 	public getUser(): User | undefined {
@@ -84,12 +84,12 @@ export abstract class AuthService implements IAuthService {
 
 	protected setUser(user: User) {
 		this.user = user;
-		localStorage.setItem('user', JSON.stringify(user));
+		localStorage.setItem("user", JSON.stringify(user));
 	}
 
 	protected clearUser() {
 		this.user = undefined;
-		localStorage.removeItem('user');
+		localStorage.removeItem("user");
 	}
 
 	protected clearAuth() {

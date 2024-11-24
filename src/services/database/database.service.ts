@@ -1,4 +1,4 @@
-import { Surreal } from 'surrealdb';
+import { Surreal } from "surrealdb";
 
 export type DbConfig = {
 	url: string;
@@ -50,7 +50,7 @@ export class DatabaseService {
 			this._isReady = true;
 			return true;
 		} catch (error) {
-			console.error('Failed to connect to database:', error);
+			console.error("Failed to connect to database:", error);
 			// Promise.reject(error);
 			throw error;
 		}
@@ -62,7 +62,7 @@ export class DatabaseService {
 	 */
 	public getDb(): Surreal {
 		if (!this.db || !this._isReady) {
-			throw new Error('Database is not ready yet');
+			throw new Error("Database is not ready yet");
 		}
 
 		return this.db;
