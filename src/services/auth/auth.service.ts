@@ -82,6 +82,21 @@ export abstract class AuthService implements IAuthService {
 		return this.user;
 	}
 
+	public getRandUser(): User {
+		const randUser = JSON.parse(localStorage.getItem("randUser") || "null") as User;
+
+		if (randUser) {
+			return randUser;
+		} else {
+			const randomId = Math.random().toString(36).substring(7);
+			const user = { id: randomId } as User;
+
+			localStorage.setItem("randUser", JSON.stringify(user));
+
+			return user;
+		}
+	}
+
 	protected setUser(user: User) {
 		this.user = user;
 		localStorage.setItem("user", JSON.stringify(user));
