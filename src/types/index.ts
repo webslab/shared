@@ -1,3 +1,5 @@
+import type { RecordId } from "surrealdb";
+
 export type Analytic = {
 	created?: Date | undefined;
 	location: {
@@ -9,23 +11,12 @@ export type Analytic = {
 	performance: {
 		[x: string]: unknown;
 	};
-	user_id: string | {
-		id: string;
-		table: string;
-	} | User;
-	id?:
-		| (string | {
-			id: string;
-			table: string;
-		})
-		| undefined;
+	user_id: (RecordId | User) | string;
+	id?: RecordId | undefined;
 };
 
 export type Module = {
-	author: string | {
-		id: string;
-		table: string;
-	} | User;
+	author: RecordId | User;
 	content: string;
 	created?: Date | undefined;
 	hero: string;
@@ -35,22 +26,12 @@ export type Module = {
 	title: string;
 	updated?: Date | undefined;
 	visits?: unknown;
-	id?:
-		| (string | {
-			id: string;
-			table: string;
-		})
-		| undefined;
+	id?: RecordId | undefined;
 };
 
 export type Visits = {
 	created?: Date | undefined;
-	id?:
-		| (string | {
-			id: string;
-			table: string;
-		})
-		| undefined;
+	id?: RecordId | undefined;
 	in:
 		| {
 			id: string;
@@ -70,12 +51,7 @@ export type Visits = {
 
 export type Likes = {
 	created?: Date | undefined;
-	id?:
-		| (string | {
-			id: string;
-			table: string;
-		})
-		| undefined;
+	id?: RecordId | undefined;
 	in:
 		| {
 			id: string;
@@ -100,21 +76,14 @@ export type User = {
 	password?: string | undefined;
 	role?: string | undefined;
 	username: string;
-	id?:
-		| (string | {
-			id: string;
-			table: string;
-		})
-		| undefined;
+	id?: RecordId | undefined;
 };
 
 export type Post = {
-	author: string | {
-		id: string;
-		table: string;
-	} | User;
+	author: RecordId | User;
 	content: string;
 	created?: Date | undefined;
+	draft?: boolean | undefined;
 	hero: string;
 	likes?: unknown;
 	publish?: Date | undefined;
@@ -122,10 +91,5 @@ export type Post = {
 	title: string;
 	updated?: Date | undefined;
 	visits?: unknown;
-	id?:
-		| (string | {
-			id: string;
-			table: string;
-		})
-		| undefined;
+	id?: RecordId | undefined;
 };
