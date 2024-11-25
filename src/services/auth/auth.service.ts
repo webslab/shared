@@ -2,7 +2,7 @@ import { DatabaseService } from "../database/index.ts";
 
 import type { IAuthService } from "./auth.interface.ts";
 import type { DbConfig } from "../database/index.ts";
-import type { Surreal } from "surrealdb";
+import { RecordId, type Surreal } from "surrealdb";
 import type { User } from "../../types/index.ts";
 
 export abstract class AuthService implements IAuthService {
@@ -82,14 +82,16 @@ export abstract class AuthService implements IAuthService {
 		return this.user;
 	}
 
-	public getRandUser(): User {
-		const randUser = JSON.parse(localStorage.getItem("randUser") || "null") as User;
+	public getRandUser(): { id: string } {
+		const randUser = JSON.parse(
+			localStorage.getItem("randUser") || "null",
+		) as { id: string } | null;
 
 		if (randUser) {
-			return randUser;
+			return { id: randUser.id };
 		} else {
 			const randomId = Math.random().toString(36).substring(7);
-			const user = { id: randomId } as User;
+			const user = { id: `user:${randomId}` };
 
 			localStorage.setItem("randUser", JSON.stringify(user));
 
