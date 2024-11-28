@@ -17,7 +17,7 @@ export type Analytic = {
 
 export type Module = {
 	author: RecordId | User;
-	content: string;
+	content: string[];
 	created?: Date | undefined;
 	hero: string;
 	likes?: unknown;
@@ -81,7 +81,7 @@ export type User = {
 
 export type Post = {
 	author: RecordId | User;
-	content: string;
+	content: string[];
 	created?: Date | undefined;
 	draft?: boolean | undefined;
 	hero: string;
