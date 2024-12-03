@@ -12,7 +12,7 @@ export type Analytic = {
 		[x: string]: unknown;
 	};
 	user_id: (RecordId | User) | string;
-	id?: RecordId | undefined;
+	id?: string | RecordId | undefined;
 };
 
 export type Module = {
@@ -26,47 +26,21 @@ export type Module = {
 	title: string;
 	updated?: Date | undefined;
 	visits?: unknown;
-	id?: RecordId | undefined;
+	id?: string | RecordId | undefined;
 };
 
 export type Visits = {
 	created?: Date | undefined;
-	id?: RecordId | undefined;
-	in:
-		| {
-			id: string;
-			table: string;
-		}
-		| string
-		| User;
-	out:
-		| {
-			id: string;
-			table: string;
-		}
-		| string
-		| Post
-		| Module;
+	id?: string | RecordId | undefined;
+	in: string | RecordId | User;
+	out: string | RecordId | Post | Module;
 };
 
 export type Likes = {
 	created?: Date | undefined;
-	id?: RecordId | undefined;
-	in:
-		| {
-			id: string;
-			table: string;
-		}
-		| string
-		| User;
-	out:
-		| {
-			id: string;
-			table: string;
-		}
-		| string
-		| Post
-		| Module;
+	id?: string | RecordId | undefined;
+	in: string | RecordId | User;
+	out: string | RecordId | Post | Module;
 };
 
 export type User = {
@@ -76,7 +50,7 @@ export type User = {
 	password?: string | undefined;
 	role?: string | undefined;
 	username: string;
-	id?: RecordId | undefined;
+	id?: string | RecordId | undefined;
 };
 
 export type Post = {
@@ -91,5 +65,5 @@ export type Post = {
 	title: string;
 	updated?: Date | undefined;
 	visits?: unknown;
-	id?: RecordId | undefined;
+	id?: string | RecordId | undefined;
 };
