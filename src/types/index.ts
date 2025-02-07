@@ -15,6 +15,21 @@ export type Analytic = {
 	id?: string | RecordId | undefined;
 };
 
+export type Grants = {
+	created?: Date | undefined;
+	allocator: RecordId | User;
+	id?: string | RecordId | undefined;
+	in: RecordId | User;
+	out: RecordId | Module;
+};
+
+export type Likes = {
+	created?: Date | undefined;
+	id?: string | RecordId | undefined;
+	in: RecordId | User;
+	out: RecordId | Post | Module;
+};
+
 export type Module = {
 	author: RecordId | User;
 	content: string[];
@@ -29,27 +44,16 @@ export type Module = {
 	id?: string | RecordId | undefined;
 };
 
-export type Visits = {
-	created?: Date | undefined;
-	id?: string | RecordId | undefined;
-	in: string | RecordId | User;
-	out: string | RecordId | Post | Module;
-};
-
-export type Likes = {
-	created?: Date | undefined;
-	id?: string | RecordId | undefined;
-	in: string | RecordId | User;
-	out: string | RecordId | Post | Module;
-};
-
-export type User = {
-	auth_until?: Date | undefined;
-	email: string;
-	name: string;
-	password?: string | undefined;
-	role?: string | undefined;
-	username: string;
+export type Paper = {
+	user: RecordId | User;
+	module: RecordId | Module;
+	answers?: {
+		content?: string | undefined;
+		question: RecordId | Question;
+	}[] | undefined;
+	actions?: {
+		name: string;
+	}[] | undefined;
 	id?: string | RecordId | undefined;
 };
 
@@ -66,4 +70,37 @@ export type Post = {
 	updated?: Date | undefined;
 	visits?: unknown;
 	id?: string | RecordId | undefined;
+};
+
+export type Question = {
+	content: string;
+	type: string;
+	range?: {
+		hold?: number | undefined;
+		min: number;
+		max: number;
+		spelled?: string[] | undefined;
+	} | undefined;
+	text?: {
+		hold?: string | undefined;
+		max?: number | undefined;
+	} | undefined;
+	id?: string | RecordId | undefined;
+};
+
+export type User = {
+	auth_until?: Date | undefined;
+	email: string;
+	name: string;
+	password?: string | undefined;
+	role?: string | undefined;
+	username: string;
+	id?: string | RecordId | undefined;
+};
+
+export type Visits = {
+	created?: Date | undefined;
+	id?: string | RecordId | undefined;
+	in: RecordId | User;
+	out: RecordId | Post | Module;
 };
