@@ -1,4 +1,5 @@
 import { WebslabElement } from "../webslab/index.ts";
+
 import { customElement, property, query } from "lit/decorators.js";
 import { html } from "lit";
 import { Task } from "@lit/task";
@@ -6,7 +7,7 @@ import { Task } from "@lit/task";
 // @ts-types="@types/nunjucks"
 import nunjucks from "nunjucks";
 
-import type { Uuid } from "surrealdb";
+import type { Surreal, Uuid } from "surrealdb";
 import type { CSSResultGroup, TemplateResult } from "lit";
 import type { IDatabaseService } from "../../services/database/database.interface.ts";
 // import type { IAuthService } from '../../services/auth/index.ts';
@@ -41,12 +42,7 @@ export class WlDatabase extends WebslabElement {
 
 	private task = new Task(this, {
 		task: async ([auth]) => {
-			if (!auth) {
-				this.emit("wl-task:error");
-				return;
-			}
-
-			if (!await auth.isReady) {
+			if (!auth || !await auth.isReady) {
 				this.emit("wl-task:error");
 				return;
 			}
@@ -71,9 +67,11 @@ export class WlDatabase extends WebslabElement {
 			target.innerHTML = rendered;
 
 			if (this.live) {
+				const wsDb = await auth.getWsDb();
+
 				try {
-					const uuid: Uuid[] = await db.query("LIVE " + this.query);
-					await this.listenDb(uuid[0]);
+					const uuid: Uuid[] = await wsDb.query("LIVE " + this.query);
+					await this.listenDb(uuid[0], wsDb);
 				} catch (e) {
 					console.error(e);
 					this.emit("wl-task:error");
@@ -161,8 +159,7 @@ export class WlDatabase extends WebslabElement {
 		}
 	}
 
-	async listenDb(uuid: Uuid) {
-		const db = this.auth!.getDb();
+	async listenDb(uuid: Uuid, db: Surreal) {
 		await db.subscribeLive(uuid, (action, item) => {
 			switch (action) {
 				case "CLOSE":
