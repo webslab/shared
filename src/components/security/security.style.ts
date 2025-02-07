@@ -25,7 +25,7 @@ export default css`
 
   .warning {
     position: absolute;
-    top: 30svh;
+    top: 40svh;
     left: 50%;
 
     text-align: center;
