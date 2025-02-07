@@ -1,46 +1,28 @@
 import { DatabaseService } from "../database/index.ts";
 
-import type { IAuthService } from "./auth.interface.ts";
 import type { DbConfig } from "../database/index.ts";
-import { RecordId, type Surreal } from "surrealdb";
+import type { IAuthService } from "./auth.interface.ts";
+import type { Surreal } from "surrealdb";
 import type { User } from "../../types/index.ts";
 
 export abstract class AuthService implements IAuthService {
-	public isReady: Promise<boolean>;
-	private user?: User;
-	private token?: string = localStorage.getItem("token") || undefined;
 	protected databaseService: DatabaseService;
+
+	private token?: string;
+	private user?: User;
+
+	public isReady: Promise<boolean>;
 
 	constructor(db: DbConfig | Surreal) {
 		this.user = localStorage.getItem("user")
-			? JSON.parse(localStorage.getItem("user") as string)
+			? JSON.parse(localStorage.getItem("user") as string) as User
 			: undefined;
+
+		this.token = localStorage.getItem("token") || undefined;
 
 		this.databaseService = new DatabaseService(db);
 		this.isReady = this.initialize();
 	}
-
-	private async initialize(): Promise<boolean> {
-		try {
-			await this.databaseService.isReady;
-
-			if (this.token) {
-				try {
-					await this.databaseService.getDb().authenticate(this.token);
-				} catch (_) {
-					// console.error(_);
-					this.clearAuth();
-				}
-			}
-
-			return true;
-		} catch (_) {
-			// console.error(_);
-			return false;
-		}
-	}
-
-	abstract signin(username?: string, password?: string, access?: string): Promise<boolean>;
 
 	// ?? should be abstract
 	public signup(user: User): Promise<boolean> {
@@ -68,9 +50,8 @@ export abstract class AuthService implements IAuthService {
 		return this.databaseService.getWsDb(this.getToken());
 	}
 
-	protected clearToken() {
-		this.token = undefined;
-		localStorage.removeItem("token");
+	public getToken(): string | undefined {
+		return this.token;
 	}
 
 	public getUser(): User | undefined {
@@ -92,6 +73,38 @@ export abstract class AuthService implements IAuthService {
 
 			return user;
 		}
+	}
+
+	abstract signin(username?: string, password?: string, access?: string): Promise<boolean>;
+
+	private async initialize(): Promise<boolean> {
+		try {
+			await this.databaseService.isReady;
+
+			if (this.token) {
+				try {
+					await this.databaseService.getDb().authenticate(this.token);
+				} catch (_) {
+					// console.error(_);
+					this.clearAuth();
+				}
+			}
+
+			return true;
+		} catch (_) {
+			// console.error(_);
+			return false;
+		}
+	}
+
+	protected setToken(token: string) {
+		this.token = token;
+		localStorage.setItem("token", token);
+	}
+
+	protected clearToken() {
+		this.token = undefined;
+		localStorage.removeItem("token");
 	}
 
 	protected setUser(user: User) {
