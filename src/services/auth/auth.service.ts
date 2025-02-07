@@ -64,13 +64,8 @@ export abstract class AuthService implements IAuthService {
 		return this.databaseService.getDb();
 	}
 
-	public getToken(): string | undefined {
-		return this.token;
-	}
-
-	protected setToken(token: string) {
-		this.token = token;
-		localStorage.setItem("token", token);
+	public getWsDb(): Promise<Surreal> {
+		return this.databaseService.getWsDb(this.getToken());
 	}
 
 	protected clearToken() {

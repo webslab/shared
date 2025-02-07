@@ -67,4 +67,22 @@ export class DatabaseService {
 
 		return this.db;
 	}
+
+	public async getWsDb(token?: string): Promise<Surreal> {
+		if (!this.db || !this._isReady) {
+			throw new Error("Database is not ready yet");
+		}
+
+		const url = new URL(this.dbConfig!.url);
+		if (url.protocol.includes("ws")) return this.db;
+
+		const db = new Surreal();
+		const protocol = url.protocol.includes("https") ? "wss" : "ws";
+
+		await db.connect(`${protocol}:${url.host}`, { ...this.dbConfig!.config });
+
+		if (token) await db.authenticate(token);
+
+		return db;
+	}
 }
