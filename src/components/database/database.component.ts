@@ -68,9 +68,10 @@ export class WlDatabase extends WebslabElement {
 
 			if (this.live) {
 				const wsDb = await auth.getWsDb();
+				const query = this.query.split("ORDER")[0].split("LIMIT")[0].split("GROUP")[0]; // TODO: research: there must be a better way to do this.
 
 				try {
-					const uuid: Uuid[] = await wsDb.query("LIVE " + this.query);
+					const uuid: Uuid[] = await wsDb.query(`LIVE ${query}`);
 					await this.listenDb(uuid[0], wsDb);
 				} catch (e) {
 					console.error(e);
