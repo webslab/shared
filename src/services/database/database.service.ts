@@ -78,8 +78,9 @@ export class DatabaseService {
 
 		const db = new Surreal();
 		const protocol = url.protocol.includes("https") ? "wss" : "ws";
+		const endpoint = url.host + url.pathname;
 
-		await db.connect(`${protocol}:${url.host}`, { ...this.dbConfig!.config });
+		await db.connect(`${protocol}:${endpoint}`, { ...this.dbConfig!.config });
 
 		if (token) await db.authenticate(token);
 
