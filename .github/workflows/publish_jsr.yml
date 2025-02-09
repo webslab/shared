@@ -40,8 +40,8 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Install dependencies
-        run: deno install
+      # - name: Install dependencies
+      #   run: deno install
 
       - name: Build
         run: deno run -A scripts/build_npm.ts
