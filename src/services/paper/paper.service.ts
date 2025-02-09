@@ -1,7 +1,7 @@
 import { RecordId } from "surrealdb";
 
 import type { AuthService } from "../auth/auth.service.ts";
-import type { Module, Paper, Question } from "../../types/index.ts";
+import type { Module, Paper, Question, User } from "../../types/index.ts";
 
 type Answer = {
 	content: string;
@@ -18,9 +18,9 @@ export class PaperService implements Paper {
 	actions: Action[] = [];
 	answers: Answer[];
 
-	authSvc;
-	module;
-	user;
+	authSvc: AuthService;
+	module: Module;
+	user: User;
 
 	constructor(module: Module, authSvc: AuthService) {
 		this.authSvc = authSvc;
