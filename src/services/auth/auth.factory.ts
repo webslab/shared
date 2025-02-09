@@ -9,7 +9,7 @@ export const AuthProvider = ["surreal", "auth0"] as const;
 type ReturnType = AuthSurreal | AuthZero;
 type DbType = DbConfig | Surreal;
 
-export function getAuthService(db: DbType, provider: typeof AuthProvider[number]): ReturnType {
+export function getAuthService(db: DbType, provider?: typeof AuthProvider[number]): ReturnType {
 	switch (provider) {
 		case AuthProvider[1]:
 			return new AuthZero(db);
