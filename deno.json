@@ -12,6 +12,7 @@
 		"./components": "./src/components/index.ts",
 		"./services/database": "./src/services/database/index.ts",
 		"./services/theming": "./src/services/theming/index.ts",
+		"./services/paper": "./src/services/paper/index.ts",
 		"./services/auth": "./src/services/auth/index.ts",
 		"./services": "./src/services/index.ts",
 		"./types": "./src/types/index.ts"

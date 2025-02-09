@@ -1,10 +1,16 @@
 import { build, emptyDir } from "jsr:@deno/dnt";
+
 import denoPkg from "../deno.json" with { type: "json" };
+import nodePkg from "../package.json" with { type: "json" };
 
 await emptyDir("./npm");
 
+const exports = Object.entries(denoPkg.exports).map(([name, path]) => ({ name, path }));
 await build({
-	entryPoints: ["./mod.ts"],
+	entryPoints: [
+		...exports,
+	],
+
 	outDir: "./npm",
 
 	shims: {
@@ -23,10 +29,11 @@ await build({
 		version: denoPkg.version,
 		description: "Your package.",
 		license: denoPkg.license,
-		// repository: {
-		// 	type: "git",
-		// 	url: "git+https://github.com/username/repo.git",
-		// },
+		dependencies: nodePkg.dependencies,
+		repository: {
+			type: "git",
+			url: "git+https://github.com/webslab/shared.git",
+		},
 		// bugs: {
 		// 	url: "https://github.com/username/repo/issues",
 		// },
