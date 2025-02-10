@@ -31,10 +31,10 @@ export type Likes = {
 };
 
 export type Module = {
-	author: RecordId | User;
-	content: string[];
+	author?: (RecordId | User) | undefined;
+	content?: string[] | undefined;
 	created?: Date | undefined;
-	hero: string;
+	hero?: string | undefined;
 	likes?: unknown;
 	publish?: Date | undefined;
 	slug?: string | undefined;
@@ -47,6 +47,7 @@ export type Module = {
 export type Paper = {
 	user: RecordId | User;
 	module: RecordId | Module;
+	created?: Date | undefined;
 	answers?: {
 		content?: string | undefined;
 		question: RecordId | Question;
@@ -58,11 +59,11 @@ export type Paper = {
 };
 
 export type Post = {
-	author: RecordId | User;
-	content: string[];
+	author?: (RecordId | User) | undefined;
+	content?: string[] | undefined;
 	created?: Date | undefined;
 	draft?: boolean | undefined;
-	hero: string;
+	hero?: string | undefined;
 	likes?: unknown;
 	publish?: Date | undefined;
 	slug?: string | undefined;
