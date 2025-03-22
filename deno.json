@@ -7,8 +7,8 @@
 		"exam:db": "deno run --allow-net --allow-read --watch ./examples/database/01.ts"
 	},
 	"exports": {
-		"./components/security": "./src/components/security/index.ts",
 		"./components/database": "./src/components/database/index.ts",
+		"./components/security": "./src/components/security/index.ts",
 		"./components": "./src/components/index.ts",
 		"./services/database": "./src/services/database/index.ts",
 		"./services/theming": "./src/services/theming/index.ts",
