@@ -29,7 +29,6 @@ jobs:
 
   publish_npm:
     runs-on: ubuntu-latest
-    needs: [publish_jsr]
 
     permissions:
       contents: read
