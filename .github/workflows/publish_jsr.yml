@@ -1,8 +1,10 @@
-name: Publish to JSR
+name: Publish packages
 on:
   push:
     tags:
       - "v*"
+
+  workflow_dispatch:
 
 jobs:
   publish_jsr:
@@ -40,8 +42,8 @@ jobs:
         with:
           deno-version: v2.x
 
-      # - name: Install dependencies
-      #   run: deno install
+      - name: Install dependencies
+        run: deno install --node-modules-dir=auto
 
       - name: Build
         run: deno run -A scripts/build_npm.ts
@@ -51,6 +53,9 @@ jobs:
 
       - name: Npm version
         run: npm --version
+
+      - name: Debug - list content
+        run: ls -l npm
 
       # - name: Publish package
       #   run: npm publish --access public npm
