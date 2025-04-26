@@ -3,8 +3,8 @@
 	"version": "0.3.0",
 	"license": "MIT",
 	"tasks": {
-		"exam:auth": "deno run --allow-net --allow-read --watch ./examples/auth/01.ts",
-		"exam:db": "deno run --allow-net --allow-read --watch ./examples/database/01.ts"
+		"exam:auth": "deno run --allow-net --allow-read --watch ./examples/services/auth/01.ts",
+		"exam:db": "deno run --allow-net --allow-read --watch ./examples/services/database/01.ts"
 	},
 	"exports": {
 		"./components/database": "./src/components/database/index.ts",
@@ -18,7 +18,7 @@
 		"./types": "./src/types/index.ts"
 	},
 	"compilerOptions": {
-		"lib": ["deno.ns", "dom"]
+		"lib": ["deno.ns", "dom", "dom.iterable"]
 	},
 	"lock": false,
 	"fmt": {
@@ -27,6 +27,6 @@
 		"indentWidth": 4,
 		"semiColons": true,
 		"singleQuote": false,
-		"exclude": ["./dist", "./_dev/public/template.html"]
+		"exclude": ["./dist"]
 	}
 }

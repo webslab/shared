@@ -1,14 +1,14 @@
-import { getAuthService } from "../../src/services/auth/index.ts";
-import type { User } from "../../src/types/index.ts";
+import { getAuthService } from "../../../src/services/auth/index.ts";
+import type { User } from "../../../src/types/index.ts";
 
 const auth = getAuthService({
 	url: "ws://localhost:8000",
 	config: {
 		access: "user",
 		database: "test",
-		namespace: "test",
+		namespace: "webslab",
 	},
-}, "surreal");
+});
 
 console.log("ready:", await auth.isReady);
 

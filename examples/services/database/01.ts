@@ -1,12 +1,12 @@
-import { DatabaseService } from "../../src/services/database/index.ts";
-import type { Module, Post } from "../../src/types/index.ts";
+import { DatabaseService } from "../../../src/services/database/index.ts";
+import type { Module, Post } from "../../../src/types/index.ts";
 
 const dbSvc = new DatabaseService({
 	url: "ws://localhost:8000",
 	config: {
 		access: "user",
 		database: "test",
-		namespace: "test",
+		namespace: "webslab",
 	},
 });
 
