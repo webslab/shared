@@ -8,9 +8,11 @@
 	},
 	"exports": {
 		"./components/database": "./src/components/database/index.ts",
+		"./components/question": "./src/components/question/index.ts",
 		"./components/security": "./src/components/security/index.ts",
 		"./components": "./src/components/index.ts",
 		"./services/database": "./src/services/database/index.ts",
+		"./services/question": "./src/services/question/index.ts",
 		"./services/theming": "./src/services/theming/index.ts",
 		"./services/paper": "./src/services/paper/index.ts",
 		"./services/auth": "./src/services/auth/index.ts",

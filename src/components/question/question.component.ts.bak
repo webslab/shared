@@ -1,0 +1,319 @@
+import { WebslabElement } from "../webslab/index.ts";
+import { customElement, property, query, state } from "lit/decorators.js";
+import { html } from "lit";
+// import { Task } from "@lit/task";
+
+// @ts-types="@types/nunjucks"
+// import nunjucks from "nunjucks";
+// import type { Uuid } from "surrealdb";
+
+import type { CSSResultGroup, TemplateResult } from "lit";
+// import type { IDatabaseService } from "../../services/database/database.interface.ts";
+// import type { IAuthService } from '../../services/auth/index.ts';
+
+import styles from "./question.style.ts";
+import componentStyles from "../styles.ts";
+import type { Question } from "../../types/index.ts";
+
+@customElement("wl-question")
+export class WlQuestion extends WebslabElement {
+	static override styles: CSSResultGroup = [componentStyles, styles];
+
+	@state()
+	accessor question: Question | undefined;
+
+	// question: Question | undefined;
+
+	@property({ type: String, reflect: true })
+	accessor qid: string | undefined;
+
+	@property({ type: Boolean, reflect: true })
+	accessor edit: boolean = false;
+
+	@property({ type: Object })
+	accessor actions!: { config: (question_id: Question) => Promise<Question | void> };
+
+	@query("slot[name=label]")
+	accessor label!: HTMLSlotElement;
+
+	@query("slot[name=input]")
+	accessor input!: HTMLSlotElement;
+
+	@query("slot[name=spelled]")
+	accessor spelled!: HTMLSlotElement;
+
+	override connectedCallback(): void {
+		super.connectedCallback();
+	}
+
+	constructor() {
+		super();
+		this.addEventListener("keydown", (e: KeyboardEvent) => {
+			if (e.key === "Enter") {
+				this.actionConfig();
+			}
+
+			e.stopPropagation();
+		});
+	}
+
+	override firstUpdated(): void {
+		const label = this.label.assignedElements()[0] as HTMLElement;
+		const input = this.input.assignedElements()[0] as HTMLInputElement;
+		// const spelled = this.spelled.assignedElements()[0] as HTMLElement;
+		let text;
+		let range;
+
+		const type = input.getAttribute("type")!;
+
+		switch (type) {
+			case "text":
+				text = {
+					hold: text = input.getAttribute("placeholder")!,
+					max: parseInt(input.getAttribute("maxlength")!),
+				};
+				break;
+
+			case "range":
+				range = {
+					min: parseInt(input.getAttribute("min")!),
+					max: parseInt(input.getAttribute("max")!),
+					hold: parseInt(input.getAttribute("value")!),
+					spelled: Array
+						.from(this.spelled.assignedElements()[0].children)
+						.map((el) => (el as HTMLElement).innerText),
+				};
+				break;
+		}
+
+		// TODO: changin the state on the firstUpdated method is not a good practice
+		this.question = {
+			id: this.qid,
+			type,
+			text,
+			range,
+			content: label.innerText,
+		};
+	}
+
+	private updateQuestion(question: Question): void {
+		const label = this.label.assignedElements()[0] as HTMLElement;
+		const input = this.input.assignedElements()[0] as HTMLInputElement;
+		const spelled = this.spelled.assignedElements()[0] as HTMLElement;
+
+		this.question = undefined;
+		this.question = question;
+
+		// update id
+		this.qid = question.id ? question.id.toString() : undefined;
+
+		// update label
+		label.innerText = this.question.content;
+
+		// update input
+		input.classList.remove("form-text", "form-range");
+		input.classList.add(`form-${this.question.type}`);
+		input.setAttribute("type", this.question.type);
+
+		// update range
+		if (
+			this.question.type === "range" && this.question.range && this.question.range.spelled
+		) {
+			// this.question.text = undefined;
+
+			input.setAttribute("min", this.question.range.min!.toString());
+			input.setAttribute("max", this.question.range.max!.toString());
+			input.setAttribute("value", this.question.range.hold!.toString());
+
+			spelled.innerHTML = this.question
+				.range
+				.spelled
+				.map((el: string) => `<span>${el}</span>`)
+				.join("");
+		}
+
+		// update text
+		if (this.question.type === "text" && this.question.text) {
+			// this.question.range = undefined;
+
+			input.setAttribute("placeholder", this.question.text.hold || "");
+			input.setAttribute("maxlength", this.question.text.max!.toString() || "");
+		}
+	}
+
+	actionConfig(): void {
+		if (!this.actions) return;
+
+		this
+			.actions
+			.config(this.question!)
+			.then((question) => {
+				if (question) this.updateQuestion(question);
+			});
+	}
+
+	editClose(): void {
+		this.edit = !this.edit;
+	}
+
+	override render(): TemplateResult {
+		const getType = (type: string): boolean => {
+			if (this.question && this.question.type === type) return true;
+			return false;
+		};
+
+		const getContent = () => {
+			if (this.question) return this.question.content;
+		};
+
+		return html`
+            <slot name="label"></slot>
+            <slot name="input"></slot>
+            <slot name="spelled"></slot>
+
+            <div class=${this.edit ? "edit" : ""}>
+                <!-- controls -->
+                <div class=${this.edit ? "controls" : "d-none"} >
+                    <i @click=${this.actionConfig}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
+                            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
+                        </svg>
+                    </i>
+
+                    <i @click=${this.editClose}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-x-square" viewBox="0 0 16 16">
+                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    </i>
+                </div>
+
+                <div
+                    style="margin-top: 1em; padding: 0 .5em 1em .5em; background-color: var(--wl-question-dialog-backdrop-inner);"
+                    class=${this.edit ? "" : "d-none"}>
+
+                    <form
+                        id="form"
+                        class="form-control"
+                        @submit=${(e: SubmitEvent) => e.preventDefault()}>
+                        <fieldset>
+                            <legend>Type</legend>
+                            <div style="display: flex; justify-content: space-evenly;">
+                                <div style="display: flex;">
+                                    <input
+                                        id="typeText"
+                                        type="radio"
+                                        name="type"
+                                        value="text"
+                                        .checked=${getType("text")}
+                                        @change=${() => this.question.type = "text"}
+                                        />
+
+                                    <label for="typeText">Text</label>
+                                </div>
+
+                                <div style="display: flex;">
+                                    <input
+                                        id="typeRange"
+                                        type="radio"
+                                        name="type"
+                                        value="range"
+                                        .checked=${getType("range")}
+                                        @change=${() => this.question.type = "range"}
+                                        />
+
+                                    <label style="margin-left: .2rem" for="typeRange">Range</label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Content</legend>
+
+                            <input
+                                style="width: 100%; font-size: 1.25rem; border-radius: 3px;"
+                                type="text"
+                                .value=${getContent()} />
+                        </fieldset>
+
+                        <fieldset .disabled=${!getType("range")}>
+                            <legend>Allowed Values</legend>
+
+                            <div style="display: flex; gap: 10px">
+                                <label>Min
+                                    <input type="number" />
+                                </label>
+
+                                <label>Max
+                                    <input type="number" />
+                                </label>
+
+                                <label>Hold
+                                    <input type="number" />
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <fieldset .disabled=${!getType("range")}>
+                            <legend>Spelled</legend>
+
+                            <input
+                                style="width: 100%; font-size: 1.25rem; border-radius: 3px;"
+                                type="text"
+                                .value=${getContent()} />
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+<!--
+        <dialog style="z-index: 9;">
+            <p style="margin-top: 0;">hola</p>
+
+            <form id="foo" @submit=${this.submit}>
+            <label style="margin-bottom: 1rem;">
+                Content
+                <input autofocus @keypress=${this.foobar} style="display:block;" type="text" name="content" />
+            </label>
+            </form>
+
+            <div style="display: flex; justify-content: end;">
+                <button @click=${this.actionConfig}>Close</button>
+                <button type="submit" form="foo">Send</button>
+            <div>
+        </dialog>
+-->
+        `;
+	}
+
+	// @query("dialog")
+	// accessor dialog!: HTMLDialogElement;
+
+	// @query("dialog form")
+	// accessor form!: HTMLFormElement;
+
+	// @query("dialog form label input[name=content]")
+	// accessor bar!: HTMLInputElement;
+
+	foobar(e: KeyboardEvent) {
+		console.log(e);
+	}
+
+	submit(e: SubmitEvent) {
+		e.preventDefault();
+
+		// const formData = new FormData(this.form);
+		// // @ts-ignore:
+		// const data = Object.fromEntries(formData);
+		// (this.label.assignedElements()[0] as HTMLElement).innerText = data.content;
+		// console.log(data);
+	}
+
+	foo() {
+		// console.log(this.label.assignedElements()[0]);
+		// (this.label.assignedElements()[0] as HTMLElement).innerText = "blah";
+
+		// (this.input.assignedElements()[0] as HTMLElement).setAttribute("type", "range");
+		this.updateQuestion({ type: "range", content: "blah", id: "question:jh234oi823" });
+	}
+}
