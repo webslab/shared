@@ -52,7 +52,9 @@ jobs:
       # - name: Npm version
       #   run: npm --version
 
-      - uses: actions/setup-node@4
+      - uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
