@@ -29,4 +29,5 @@ export abstract class QuestionService {
 	}
 
 	abstract edit(question: Question): Promise<Question | void>;
+	abstract delete(question: Question): Question | void;
 }
