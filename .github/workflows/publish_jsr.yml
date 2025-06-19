@@ -22,7 +22,7 @@ jobs:
       # - name: Install dependencies
       #   run: deno install
       #
-      # - name: Publish package
+      # - name: Jsr Publish package
       #   run: deno publish
 
   publish_npm:
@@ -43,17 +43,19 @@ jobs:
       # - name: Install dependencies
       #   run: deno install
 
-      - name: Build
+      - name: Deno build npm
         run: deno run -A scripts/build_npm.ts
 
       - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          registry-url: "https://registry.npmjs.org"
 
-      - run: cd npm && ls -l
+      - name: Npm CI
+        run: cd npm && npm ci
 
-      - run: cd npm && npm ci
-      - run: cd npm && npm publish --provenance --access public
+      - name: Npm CI Publish
+        run: cd npm && npm ci && npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
