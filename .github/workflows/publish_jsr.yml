@@ -45,16 +45,14 @@ jobs:
 
       - name: Build
         run: deno run -A scripts/build_npm.ts
-      - run: cd npm
 
-      - run: echo $PWD
-      - run: ls -l
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      # - name: Setup node
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 20
-      #
+      - run: cd npm && ls -l
+
       # - run: npm ci
       # - run: npm publish --provenance --access public
       #   env:
