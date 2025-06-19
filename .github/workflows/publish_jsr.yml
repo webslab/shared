@@ -45,6 +45,7 @@ jobs:
 
       - name: Build
         run: deno run -A scripts/build_npm.ts
+      - run: cd npm
 
       # - name: Install npm
       #   run: sudo apt update && sudo apt install -y nodejs
@@ -52,13 +53,11 @@ jobs:
       # - name: Npm version
       #   run: npm --version
 
-      - uses: actions/checkout@v4
       - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - run: cd npm
       - run: npm ci
       - run: npm publish --provenance --access public
         env:
