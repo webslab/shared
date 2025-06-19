@@ -52,5 +52,5 @@ jobs:
       - name: Npm version
         run: npm --version
 
-      # - name: Publish package
-      #   run: npm publish --access public npm
+      - name: Publish package
+        run: npm publish --access public npm
