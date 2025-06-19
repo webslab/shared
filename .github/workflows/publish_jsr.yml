@@ -5,25 +5,25 @@ on:
       - "v*"
 
 jobs:
-  publish_jsr:
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      id-token: write
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
-
-      - name: Install dependencies
-        run: deno install
-
-      - name: Publish package
-        run: deno publish
+  # publish_jsr:
+  #   runs-on: ubuntu-latest
+  #
+  #   permissions:
+  #     contents: read
+  #     id-token: write
+  #
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - uses: denoland/setup-deno@v2
+  #       with:
+  #         deno-version: v2.x
+  #
+  #     - name: Install dependencies
+  #       run: deno install
+  #
+  #     - name: Publish package
+  #       run: deno publish
 
   publish_npm:
     runs-on: ubuntu-latest
@@ -47,16 +47,8 @@ jobs:
         run: deno run -A scripts/build_npm.ts
       - run: cd npm
 
-      # - name: Install npm
-      #   run: sudo apt update && sudo apt install -y nodejs
-      #
-      # - name: Npm version
-      #   run: npm --version
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      - run: echo $PWD
+      - run: ls -l
 
       - run: npm ci
       - run: npm publish --provenance --access public
