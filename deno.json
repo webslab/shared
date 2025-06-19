@@ -1,6 +1,6 @@
 {
 	"name": "@webslab/shared",
-	"version": "0.3.3",
+	"version": "0.3.4",
 	"license": "MIT",
 	"tasks": {
 		"exam:auth": "deno run --allow-net --allow-read --watch ./examples/services/auth/01.ts",
