@@ -58,6 +58,7 @@ jobs:
         with:
           node-version: 20
 
+      - run: cd npm
       - run: npm ci
       - run: npm publish --provenance --access public
         env:
