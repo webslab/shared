@@ -22,6 +22,9 @@ export class WlQuestion extends WebslabElement {
 	@property({ type: Boolean, reflect: true })
 	accessor edit: boolean = false;
 
+	@property({ type: Boolean, reflect: true })
+	accessor userTouched: boolean = false;
+
 	@property({ type: Object })
 	accessor actions!: QuestionService;
 	// accessor actions!: { edit: (question: Question) => Promise<Question | void> };
@@ -50,8 +53,8 @@ export class WlQuestion extends WebslabElement {
 		const input = this.input.assignedElements()[0] as HTMLInputElement;
 		const content = (this.label.assignedElements()[0] as HTMLElement).innerText;
 
-		let text;
-		let range;
+		let text: any;
+		let range: any;
 
 		const type = input.getAttribute("type")!;
 		switch (type) {
@@ -82,6 +85,23 @@ export class WlQuestion extends WebslabElement {
 			range,
 			content,
 		};
+
+		// Setup user interaction tracking for range inputs
+		if (type === "range") {
+			const markAsTouched = () => {
+				this.userTouched = true;
+				this.emit("wl-action:user-touched", {
+					detail: { qid: this.qid, input, value: input.value }
+				});
+			};
+
+			// Detect any user interaction
+			input.addEventListener("input", markAsTouched);
+			input.addEventListener("change", markAsTouched);
+			input.addEventListener("mousedown", markAsTouched);
+			input.addEventListener("touchstart", markAsTouched);
+			input.addEventListener("focus", markAsTouched);
+		}
 	}
 
 	private updateQuestion(question: Question): void {
@@ -120,7 +140,7 @@ export class WlQuestion extends WebslabElement {
 			} else {
 				if (!this.question.range.min || !this.question.range.max) return;
 
-				const foo = [];
+				const foo: string[] = [];
 				for (let i = this.question.range.min; i <= this.question.range.max; i++) {
 					foo.push(i.toString());
 				}
@@ -167,6 +187,45 @@ export class WlQuestion extends WebslabElement {
 		const input = e.target as HTMLInputElement;
 
 		this.answer.innerText = input.value;
+	}
+
+	isValid(): boolean {
+		const input = this.input.assignedElements()[0] as HTMLInputElement;
+		if (!input) return true;
+
+		let valid = true;
+
+		if (input.type === "range") {
+			// For range: must be touched by user
+			if (!this.userTouched) {
+				valid = false;
+			} else {
+				// And be within valid range
+				const value = parseInt(input.value);
+				const min = parseInt(input.min);
+				const max = parseInt(input.max);
+				valid = value >= min && value <= max;
+			}
+		} else if (input.type === "text") {
+			// For text: must not be empty
+			valid = input.value.trim() !== "";
+		}
+
+		// Emit validation change event
+		this.emit("wl-task:validation-completed", {
+			detail: { qid: this.qid, isValid: valid }
+		});
+
+		return valid;
+	}
+
+	reset(): void {
+		this.userTouched = false;
+		const input = this.input.assignedElements()[0] as HTMLInputElement;
+		if (input) {
+			input.value = input.defaultValue || "";
+		}
+		this.answer.innerText = "";
 	}
 
 	override render(): TemplateResult {
