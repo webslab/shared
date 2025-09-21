@@ -77,12 +77,14 @@ export type Question = {
 	content: string;
 	type: string;
 	range?: {
+		required?: boolean | undefined;
 		hold?: number | undefined;
 		min: number;
 		max: number;
 		spelled?: string[] | undefined;
 	} | undefined;
 	text?: {
+		required?: boolean | undefined;
 		hold?: string | undefined;
 		max?: number | undefined;
 	} | undefined;

@@ -5,7 +5,7 @@ import type { AuthService } from "../auth/auth.service.ts";
 import type { Module, Paper, Question, User } from "../../types/index.ts";
 
 type Answer = {
-	content: string;
+	content: string | undefined;
 	question: RecordId | Question;
 };
 
@@ -16,9 +16,8 @@ type Action = {
 };
 
 export class PaperService implements Paper {
-	// paper: Paper; // TODO: preffered
 	actions: Action[] = [];
-	answers: Answer[] = [];
+	answers: Paper["answers"] = [];
 
 	authSvc: AuthService;
 	module: Module;
@@ -35,10 +34,10 @@ export class PaperService implements Paper {
 	// throw "";
 	public async submit(current: number, answers?: object[]): Promise<void> {
 		if (answers?.length !== 0) {
-			(answers as Answer[])?.forEach((answer) => {
+			(answers as Paper["answers"])?.forEach((answer) => {
 				const question = answer.question.toString().split(":");
 
-				this.answers.push({
+				this.answers?.push({
 					content: answer.content,
 					question: new RecordId("question", question[1]),
 				});
@@ -59,8 +58,9 @@ export class PaperService implements Paper {
 		// return error message in case
 	}
 
+	// TODO: not used
 	public answer(current: number, answer: Answer): void {
-		this.answers.push(answer); // TODO: not used
+		this.answers?.push(answer);
 
 		this.actions.push({
 			current,
@@ -118,23 +118,4 @@ export class PaperService implements Paper {
 			throw e as SurrealDbError;
 		}
 	}
-
-	// private searchQuestions(): Answer[] {
-	// 	if (!this.module.content) return [] as Answer[];
-	//
-	// 	return this.module
-	// 		.content
-	// 		.filter((content) => content.includes("<wl-question"))
-	// 		.map((content) => {
-	// 			const qid = content.match(/<wl-question.*qid="question:(.*)".*>/);
-	//
-	// 			if (qid) {
-	// 				return {
-	// 					content: "",
-	// 					question: new RecordId("question", qid[1]),
-	// 				};
-	// 			}
-	// 		})
-	// 		.filter((question) => question !== undefined);
-	// }
 }

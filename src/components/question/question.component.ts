@@ -1,6 +1,6 @@
 import { WebslabElement } from "../webslab/index.ts";
 
-import { customElement, property, query } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import { html } from "lit";
 import type { CSSResultGroup, TemplateResult } from "lit";
 
@@ -25,12 +25,15 @@ export class WlQuestion extends WebslabElement {
 	@property({ type: Boolean, reflect: true })
 	accessor userTouched: boolean = false;
 
+	@property({ type: Boolean, reflect: true })
+	accessor required: boolean = false;
+
 	@property({ type: Object })
 	accessor actions!: QuestionService;
 	// accessor actions!: { edit: (question: Question) => Promise<Question | void> };
 
-	@query("#answer")
-	accessor answer!: HTMLSpanElement;
+	@state()
+	accessor value: string | undefined;
 
 	@query("slot[name=label]")
 	accessor label!: HTMLSlotElement;
@@ -53,8 +56,10 @@ export class WlQuestion extends WebslabElement {
 		const input = this.input.assignedElements()[0] as HTMLInputElement;
 		const content = (this.label.assignedElements()[0] as HTMLElement).innerText;
 
-		let text: any;
-		let range: any;
+		this.value = input.value;
+
+		let text: Question["text"];
+		let range: Question["range"];
 
 		const type = input.getAttribute("type")!;
 		switch (type) {
@@ -62,6 +67,7 @@ export class WlQuestion extends WebslabElement {
 				text = {
 					hold: input.getAttribute("placeholder")!,
 					max: parseInt(input.getAttribute("maxlength")!),
+					required: this.required,
 				};
 				break;
 
@@ -70,6 +76,7 @@ export class WlQuestion extends WebslabElement {
 					min: parseInt(input.getAttribute("min")!),
 					max: parseInt(input.getAttribute("max")!),
 					hold: parseInt(input.getAttribute("value")!),
+					required: this.required,
 					spelled: Array
 						.from(this.spelled.assignedElements()[0].children)
 						.map((el) => (el as HTMLElement).innerText),
@@ -91,7 +98,7 @@ export class WlQuestion extends WebslabElement {
 			const markAsTouched = () => {
 				this.userTouched = true;
 				this.emit("wl-action:user-touched", {
-					detail: { qid: this.qid, input, value: input.value }
+					detail: { qid: this.qid, input, value: this.value },
 				});
 			};
 
@@ -127,6 +134,9 @@ export class WlQuestion extends WebslabElement {
 		if (this.question.type === "range" && this.question.range) {
 			// this.question.text = undefined;
 
+			// Actualizar required desde question.range.required
+			this.required = this.question.range.required || false;
+
 			input.setAttribute("min", this.question.range.min!.toString());
 			input.setAttribute("max", this.question.range.max!.toString());
 			input.setAttribute("value", this.question.range.hold!.toString());
@@ -152,6 +162,9 @@ export class WlQuestion extends WebslabElement {
 		// update text
 		if (this.question.type === "text" && this.question.text) {
 			// this.question.range = undefined;
+
+			// Actualizar required desde question.text.required
+			this.required = this.question.text.required || false;
 
 			input.removeAttribute("value");
 
@@ -186,13 +199,25 @@ export class WlQuestion extends WebslabElement {
 	inputChange(e: Event): void {
 		const input = e.target as HTMLInputElement;
 
-		this.answer.innerText = input.value;
+		this.value = input.value;
+		this.classList.remove("invalid");
 	}
 
 	isValid(): boolean {
 		const input = this.input.assignedElements()[0] as HTMLInputElement;
 		if (!input) return true;
 
+		// Si la pregunta es opcional (default), siempre es válida
+		if (!this.required) {
+			this.classList.remove("invalid");
+			this.emit("wl-task:validation-completed", {
+				detail: { qid: this.qid, isValid: true, required: false },
+			});
+
+			return true;
+		}
+
+		// Solo validar si es explícitamente required=true
 		let valid = true;
 
 		if (input.type === "range") {
@@ -211,30 +236,38 @@ export class WlQuestion extends WebslabElement {
 			valid = input.value.trim() !== "";
 		}
 
+		// Agregar/quitar clase CSS para el consumidor
+		if (valid) {
+			this.classList.remove("invalid");
+		} else {
+			this.classList.add("invalid");
+		}
+
 		// Emit validation change event
 		this.emit("wl-task:validation-completed", {
-			detail: { qid: this.qid, isValid: valid }
+			detail: { qid: this.qid, isValid: valid, required: true },
 		});
 
 		return valid;
 	}
 
 	reset(): void {
-		this.userTouched = false;
 		const input = this.input.assignedElements()[0] as HTMLInputElement;
+		this.userTouched = false;
+
 		if (input) {
 			input.value = input.defaultValue || "";
 		}
-		this.answer.innerText = "";
+
+		this.value = "";
 	}
 
 	override render(): TemplateResult {
 		return html`
       <slot name="label"></slot>
       <span
-        id="answer"
         style="display: block; min-height: 1rem; text-align: center; font-weight: bold;"
-      ></span>
+        >${this.value}</span>
 
       <slot name="input" @change=${this.inputChange}></slot>
       <slot name="spelled"></slot>
