@@ -28,6 +28,9 @@ export class WlQuestion extends WebslabElement {
 	@property({ type: Boolean, reflect: true })
 	accessor required: boolean = false;
 
+	@property({ type: String, reflect: true })
+	accessor reference: string | undefined;
+
 	@property({ type: Object })
 	accessor actions!: QuestionService;
 	// accessor actions!: { edit: (question: Question) => Promise<Question | void> };
@@ -91,6 +94,7 @@ export class WlQuestion extends WebslabElement {
 			text,
 			range,
 			content,
+			reference: this.reference,
 		};
 
 		// Setup user interaction tracking for range inputs
@@ -118,6 +122,9 @@ export class WlQuestion extends WebslabElement {
 
 		this.question = undefined;
 		this.question = question;
+
+		// update reference
+		this.reference = question.reference;
 
 		// update id
 		this.qid = question.id ? question.id.toString() : undefined;

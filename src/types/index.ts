@@ -88,6 +88,7 @@ export type Question = {
 		hold?: string | undefined;
 		max?: number | undefined;
 	} | undefined;
+	reference?: string | undefined;
 	id?: string | RecordId | undefined;
 };
 
